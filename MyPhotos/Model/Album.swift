@@ -11,7 +11,21 @@ import UIKit
 class Album: NSObject {
     
     var name: String?
-    var photos: [Photo]?
+    var photos: [Photo]
+
+    var identifier: String
     
-    var identifier: String!
+    init(with identifier: String, name: String?, photos: [Photo]) {
+        self.identifier = identifier
+        self.name = name
+        self.photos = photos
+        super.init()
+    }
+}
+
+extension Album {
+    
+    var photosCount: Int {
+        return photos.count
+    }
 }

@@ -7,16 +7,13 @@
 //
 
 import UIKit
-import Photos
 
 class Photo: NSObject {
     
-    private let asset: PHAsset
+    var identifier: String
     
-    var identifier: String!
-    
-    init(with asset: PHAsset) {
-        self.asset = asset
+    init(with identifier: String) {
+        self.identifier = identifier
         super.init()
     }
 }

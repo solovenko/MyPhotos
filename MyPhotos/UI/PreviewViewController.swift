@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import Photos
 
 class PreviewViewController: UIViewController {
+    
+    var fetchResult: PHFetchResult<PHAsset>!
+    var assetCollection: PHAssetCollection!
 
     override func viewDidLoad() {
         super.viewDidLoad()
