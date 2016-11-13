@@ -14,45 +14,45 @@ class AlbumTableViewCell: UITableViewCell {
     
     var albumCoverImage: UIImage? {
         didSet {
-            __coverImageView.image = albumCoverImage
+            coverImageView.image = albumCoverImage
         }
     }
     
     var albumName: String? {
         didSet {
-            __nameLabel.text = albumName
+            nameLabel.text = albumName
             setNeedsLayout()
         }
     }
     
     var photosCount: String? {
         didSet {
-            __countLabel.text = photosCount
+            countLabel.text = photosCount
             setNeedsLayout()
         }
     }
     
-    private var __coverImageView = UIImageView()
-    private var __nameLabel = UILabel()
-    private var __countLabel = UILabel()
+    private var coverImageView = UIImageView()
+    private var nameLabel = UILabel()
+    private var countLabel = UILabel()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        __coverImageView.contentMode = .scaleAspectFill
-        __coverImageView.backgroundColor = UIColor.lightGray
-        __coverImageView.clipsToBounds = true
-        contentView.addSubview(__coverImageView)
+        coverImageView.contentMode = .scaleAspectFill
+        coverImageView.backgroundColor = UIColor.lightGray
+        coverImageView.clipsToBounds = true
+        contentView.addSubview(coverImageView)
         
-        __nameLabel.textColor = UIColor.black
-        __nameLabel.font = UIFont.systemFont(ofSize: 16)
-        __nameLabel.textAlignment = .left
-        contentView.addSubview(__nameLabel)
+        nameLabel.textColor = UIColor.black
+        nameLabel.font = UIFont.systemFont(ofSize: 16)
+        nameLabel.textAlignment = .left
+        contentView.addSubview(nameLabel)
         
-        __countLabel.textColor = UIColor.black
-        __countLabel.font = UIFont.systemFont(ofSize: 15)
-        __countLabel.textAlignment = .right
-        contentView.addSubview(__countLabel)
+        countLabel.textColor = UIColor.black
+        countLabel.font = UIFont.systemFont(ofSize: 15)
+        countLabel.textAlignment = .right
+        contentView.addSubview(countLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -70,14 +70,14 @@ class AlbumTableViewCell: UITableViewCell {
         
         let elementH = h - margin * 2
         
-        __coverImageView.frame = CGRect(x: margin, y: (h - elementH) / 2,
+        coverImageView.frame = CGRect(x: margin, y: (h - elementH) / 2,
                                         width: elementH, height: elementH)
         
-        let countW = __countLabel.sizeThatFits(CGSize()).width
-        __countLabel.frame = CGRect(x: w - countW - margin, y: (h - elementH) / 2, width: countW, height: elementH)
+        let countW = countLabel.sizeThatFits(CGSize()).width
+        countLabel.frame = CGRect(x: w - countW - margin, y: (h - elementH) / 2, width: countW, height: elementH)
         
-        let nameW = __nameLabel.sizeThatFits(CGSize()).width
-        __nameLabel.frame = CGRect(x: __coverImageView.frame.maxX + padding / 2, y: (h - elementH) / 2,
+        let nameW = nameLabel.sizeThatFits(CGSize()).width
+        nameLabel.frame = CGRect(x: coverImageView.frame.maxX + padding / 2, y: (h - elementH) / 2,
                                    width: nameW, height: elementH)
     }
     
