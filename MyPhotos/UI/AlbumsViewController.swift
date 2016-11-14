@@ -9,15 +9,6 @@
 import UIKit
 import Photos
 
-enum FetchOptions {
-    static let creationDateAscending: PHFetchOptions = {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        return options
-
-    }()
-}
-
 fileprivate enum AlbumSection: Int {
     
     case smartAlbums = 0
@@ -42,6 +33,8 @@ class AlbumsViewController: UIViewController {
     
     fileprivate var tableView: UITableView!
     fileprivate var messageLabel: UILabel!
+    
+    fileprivate var imageManager: PHCachingImageManager!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,6 +94,8 @@ class AlbumsViewController: UIViewController {
     }
     
     private func reloadData() {
+        imageManager = PHCachingImageManager()
+        
         fetchSmartAlbumsSection()
         fetchUserCollectionsSection()
     }
@@ -109,7 +104,7 @@ class AlbumsViewController: UIViewController {
         DispatchQueue.global().async {
             self.smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
             DispatchQueue.main.async {
-                print("Smart Albums reload data request: \(Date())")
+                tLog("Smart Albums reload data request complete")
                 self.tableView.reloadData()
             }
         }
@@ -119,7 +114,7 @@ class AlbumsViewController: UIViewController {
         DispatchQueue.global().async {
             self.userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
             DispatchQueue.main.async {
-                print("User Collections reload data request: \(Date())")
+                tLog("User Collections reload data request complete")
                 self.tableView.reloadData()
             }
         }
@@ -149,7 +144,7 @@ class AlbumsViewController: UIViewController {
 extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        print("\(#function) at line: \(#line) was called at \(Date())")
+        tLog("\(#function) at line: \(#line) was called")
         return AlbumSection.count
     }
     
@@ -172,101 +167,63 @@ extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AlbumTableViewCell.cellId, for: indexPath) as! AlbumTableViewCell
-     
-        let imageManager = PHCachingImageManager()
+        
+        let assetCollection: PHAssetCollection!
         
         switch AlbumSection(rawValue: indexPath.section)! {
         case .smartAlbums:
             guard let smartAlbum: PHAssetCollection = smartAlbums?.object(at: indexPath.row)
                 else { return cell }
             
-            cell.albumName = smartAlbum.localizedTitle
-            
-//            DispatchQueue.global().async {
-//                guard let photo = album.photos.last else { return }
-//                PhotoLibrary.shared.requestImage(for: photo, withQuality: .low, completion: { (image) in
-//                    DispatchQueue.main.async {
-//                        cell.albumCoverImage = image
-//                    }
-//                })
-//                
-//            }
-            
-//            DispatchQueue.global().async {
-//                let fetchOptions = PHFetchOptions()
-//                fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
-//                
-//                let result = PHAsset.fetchAssets(in: smartAlbum, options: fetchOptions)
-//                DispatchQueue.main.async {
-//                    cell.photosCount = "\(result.count)"
-//                }
-//            }
-            
-            DispatchQueue.global().async {
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-                
-                let assets = PHAsset.fetchAssets(in: smartAlbum, options: fetchOptions)
-                
-                DispatchQueue.main.async {
-                    cell.photosCount = "\(assets.count)"
-                }
-                
-                if let asset = assets.lastObject {
-                    
-                    let imageSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-                    
-                    /* For faster performance, and maybe degraded image */
-                    let imageOptions = PHImageRequestOptions()
-                    imageOptions.deliveryMode = .fastFormat
-                    imageOptions.isSynchronous = true
-                    
-                    imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFill, options: imageOptions, resultHandler: { (image, info) in
-                        
-                        DispatchQueue.main.async {
-                            cell.albumCoverImage = image!
-                        }
-                    })
-                }
-            }
+            assetCollection = smartAlbum
         case .userCollections:
-            guard let userCollection: PHAssetCollection = userCollections?.object(at: indexPath.row) as? PHAssetCollection
+            guard let userCollection = userCollections?.object(at: indexPath.row) as? PHAssetCollection
                 else { return cell }
             
-            cell.albumName = userCollection.localizedTitle
-
-            DispatchQueue.global().async {
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-                
-                let assets = PHAsset.fetchAssets(in: userCollection, options: fetchOptions)
-                
-                DispatchQueue.main.async {
-                    cell.photosCount = "\(assets.count)"
-                }
-                
-                if let asset = assets.lastObject {
-                    
-                    let imageSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-                    
-                    /* For faster performance, and maybe degraded image */
-                    let imageOptions = PHImageRequestOptions()
-                    imageOptions.deliveryMode = .fastFormat
-                    imageOptions.isSynchronous = true
-                    
-                    imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFill, options: imageOptions, resultHandler: { (image, info) in
-                        
-                        DispatchQueue.main.async {
-                            cell.albumCoverImage = image!
-                        }
-                    })
-                }
+            assetCollection = userCollection
+        }
+        
+        cell.albumName = assetCollection.localizedTitle
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            let assets = self.requestSortedAssets(for: assetCollection)
+            
+            DispatchQueue.main.async {
+                cell.photosCount = "\(assets.count)"
+            }
+            
+            if let asset = assets.lastObject {
+                self.requestImage(for: asset, completion: { (image) in
+                    DispatchQueue.main.async {
+                        cell.albumCoverImage = image
+                    }
+                })
             }
         }
         
         return cell
+    }
+    
+    private func requestSortedAssets(for assetCollection: PHAssetCollection) -> PHFetchResult<PHAsset> {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        return PHAsset.fetchAssets(in: assetCollection, options: fetchOptions)
+    }
+    
+    private func requestImage(for asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
+        let imageSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+        
+        /* For faster performance, and maybe degraded image */
+        let imageOptions = PHImageRequestOptions()
+        imageOptions.deliveryMode = .fastFormat
+        imageOptions.isSynchronous = true
+        
+        imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFill, options: imageOptions, resultHandler: { (image, info) in
+            
+            completion(image)
+        })
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -285,7 +242,6 @@ extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let assetCollection = collection as? PHAssetCollection
             else { fatalError("expected asset collection") }
         
-//        vc.fetchResult = PHAsset.fetchAssets(in: assetCollection, options: nil)
         vc.assetCollection = assetCollection
         
         self.navigationController?.pushViewController(vc, animated: true)
@@ -295,7 +251,7 @@ extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
 extension AlbumsViewController: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        print("\(#function), line: \(#line)")
+        tLog("\(#function), line: \(#line)")
         
         DispatchQueue.main.sync {
             if let changeDetails = changeInstance.changeDetails(for: smartAlbums!) {
@@ -307,17 +263,6 @@ extension AlbumsViewController: PHPhotoLibraryChangeObserver {
                 tableView.reloadSections(IndexSet(integer: AlbumSection.userCollections.rawValue), with: .automatic)
             }
         }
-    }
-}
-
-
-// TODO: - Перенести
-extension PHAssetCollection {
-    var photosCount: Int {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "mediaType == %d OR mediaType == %d", PHAssetMediaType.image.rawValue)
-        let result = PHAsset.fetchAssets(in: self, options: fetchOptions)
-        return result.count
     }
 }
 
