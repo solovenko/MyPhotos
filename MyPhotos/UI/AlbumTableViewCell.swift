@@ -12,6 +12,7 @@ class AlbumTableViewCell: UITableViewCell {
     
     static let cellId = NSStringFromClass(AlbumTableViewCell.self)
     
+    
     var albumCoverImage: UIImage? {
         didSet {
             coverImageView.image = albumCoverImage
@@ -44,13 +45,13 @@ class AlbumTableViewCell: UITableViewCell {
         coverImageView.clipsToBounds = true
         contentView.addSubview(coverImageView)
         
-        nameLabel.textColor = UIColor.black
-        nameLabel.font = UIFont.systemFont(ofSize: 16)
+        nameLabel.textColor = UIConstants.textColor
+        nameLabel.font = UIConstants.albumCellFont
         nameLabel.textAlignment = .left
         contentView.addSubview(nameLabel)
         
-        countLabel.textColor = UIColor.black
-        countLabel.font = UIFont.systemFont(ofSize: 15)
+        countLabel.textColor = UIConstants.textColor
+        countLabel.font = UIConstants.albumCellFont
         countLabel.textAlignment = .right
         contentView.addSubview(countLabel)
     }
@@ -74,7 +75,8 @@ class AlbumTableViewCell: UITableViewCell {
                                         width: elementH, height: elementH)
         
         let countW = countLabel.sizeThatFits(CGSize()).width
-        countLabel.frame = CGRect(x: w - countW - margin, y: (h - elementH) / 2, width: countW, height: elementH)
+        countLabel.frame = CGRect(x: w - countW - margin, y: (h - elementH) / 2,
+                                  width: countW, height: elementH)
         
         let nameW = nameLabel.sizeThatFits(CGSize()).width
         nameLabel.frame = CGRect(x: coverImageView.frame.maxX + padding / 2, y: (h - elementH) / 2,

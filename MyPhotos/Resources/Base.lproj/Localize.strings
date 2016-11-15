@@ -1,0 +1,12 @@
+/* 
+  Localize.strings
+  MyPhotos
+
+  Created by Артем Соловьенко on 15.11.16.
+  Copyright © 2016 Artem Solovenko. All rights reserved.
+*/
+
+"SmartAlbums" = "Smart Albums";
+"UserCollections" = "User Collections";
+
+"privacy_access_message" = "This app does not have access to your photos.\n\nYou can enable access in Privacy Settings.";

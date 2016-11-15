@@ -1,0 +1,12 @@
+/* 
+  Localize.strings
+  MyPhotos
+
+  Created by Артем Соловьенко on 15.11.16.
+  Copyright © 2016 Artem Solovenko. All rights reserved.
+*/
+
+"SmartAlbums" = "Системные альбомы";
+"UserCollections" = "Пользовательские альбомы";
+
+"privacy_access_message" = "Доступ к фото запрещен.\n\nВы можете открыть доступ в Настройки-> Конфиденциальность.";

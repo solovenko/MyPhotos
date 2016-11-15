@@ -10,6 +10,10 @@ import Foundation
 
 
 /// Log function with date prefix
-func tLog(_ string: String) {
+func Logger(_ string: String) {
     print("\(Date()) " + string)
+}
+
+func Localized(_ stringToLocalize: String) -> String {
+    return NSLocalizedString(stringToLocalize, comment: "")
 }

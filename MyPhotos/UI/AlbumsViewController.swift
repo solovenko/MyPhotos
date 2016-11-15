@@ -9,27 +9,29 @@
 import UIKit
 import Photos
 
-fileprivate enum AlbumSection: Int {
-    
-    case smartAlbums = 0
-    case userCollections
-    
-    static let count = 2
-    
-    func name() -> String {
-        switch self {
-        case .smartAlbums:
-            return "Smart Albums"
-        case .userCollections:
-            return "User Collections"
-        }
-    }
-}
+//fileprivate enum AlbumSection: Int {
+//    
+//    case smartAlbums = 0
+//    case userCollections
+//    
+//    static let count = 2
+//    
+//    func name() -> String {
+//        switch self {
+//        case .smartAlbums:
+//            return "Smart Albums"
+//        case .userCollections:
+//            return "User Collections"
+//        }
+//    }
+//}
 
 class AlbumsViewController: UIViewController {
     
     var smartAlbums: PHFetchResult<PHAssetCollection>!
     var userCollections: PHFetchResult<PHCollection>!
+    
+    fileprivate var sectionsHeaders: [AlbumSection] = []
     
     fileprivate var tableView: UITableView!
     fileprivate var messageLabel: UILabel!
@@ -43,6 +45,9 @@ class AlbumsViewController: UIViewController {
         
         view.backgroundColor = UIColor.groupTableViewBackground
         
+        sectionsHeaders = [AlbumSection(withName: "SmartAlbums"),
+                           AlbumSection(withName: "UserCollections")]
+        
         tableView = UITableView(frame: CGRect(), style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
@@ -52,8 +57,8 @@ class AlbumsViewController: UIViewController {
         messageLabel = UILabel()
         messageLabel.isUserInteractionEnabled = false
         messageLabel.backgroundColor = UIColor.clear
-        messageLabel.textColor = UIColor.lightGray
-        messageLabel.font = UIFont.systemFont(ofSize: 25)
+        messageLabel.textColor = UIConstants.Color.privacyMessageColor
+        messageLabel.font = UIConstants.Font.privacyMessageFont
         messageLabel.numberOfLines = 0
         messageLabel.textAlignment = .center
         view.addSubview(messageLabel)
@@ -72,7 +77,7 @@ class AlbumsViewController: UIViewController {
                 self.reloadData()
             } else {
                 self.shouldShowTable(false)
-                self.showMessage("This app does not have access to your photos.\n\nYou can enable access in Privacy Settings.")
+                self.showMessage(Localized(LocalizeKeys.privacyAccessMessage))
             }
         }
     }
@@ -104,7 +109,7 @@ class AlbumsViewController: UIViewController {
         DispatchQueue.global().async {
             self.smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
             DispatchQueue.main.async {
-                tLog("Smart Albums reload data request complete")
+                Logger("Smart Albums reload data request complete")
                 self.tableView.reloadData()
             }
         }
@@ -114,21 +119,21 @@ class AlbumsViewController: UIViewController {
         DispatchQueue.global().async {
             self.userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
             DispatchQueue.main.async {
-                tLog("User Collections reload data request complete")
+                Logger("User Collections reload data request complete")
                 self.tableView.reloadData()
             }
         }
     }
     
-    func showMessage(_ message: String?, showTime: TimeInterval = 0) {
+    func showMessage(_ message: String?) {
         messageLabel.text = message
         messageLabel.alpha = message == nil ? 0 : 1
         
         view.setNeedsLayout()
     }
     
-    private func shouldShowTable(_ flag: Bool) {
-        if flag {
+    private func shouldShowTable(_ needShow: Bool) {
+        if needShow {
             if tableView.superview == nil {
                 view.insertSubview(tableView, belowSubview: messageLabel)
             }
@@ -144,17 +149,12 @@ class AlbumsViewController: UIViewController {
 extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        tLog("\(#function) at line: \(#line) was called")
-        return AlbumSection.count
+        Logger("\(#function) at line: \(#line) was called")
+        return sectionsHeaders.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch AlbumSection(rawValue: section)! {
-        case .smartAlbums:
-            return smartAlbums?.count ?? 0
-        case .userCollections:
-            return userCollections?.count ?? 0
-        }
+        return sectionsHeaders[section].localizedName()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -232,8 +232,10 @@ extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
         let collection: PHCollection
         
         switch AlbumSection(rawValue: indexPath.section)! {
+            
         case .smartAlbums:
             collection = smartAlbums.object(at: indexPath.row)
+            
         case .userCollections:
             collection = userCollections.object(at: indexPath.row)
         }
@@ -251,7 +253,7 @@ extension AlbumsViewController: UITableViewDelegate, UITableViewDataSource {
 extension AlbumsViewController: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        tLog("\(#function), line: \(#line)")
+        Logger("\(#function), line: \(#line)")
         
         DispatchQueue.main.sync {
             if let changeDetails = changeInstance.changeDetails(for: smartAlbums!) {
