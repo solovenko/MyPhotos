@@ -6,7 +6,7 @@
   Copyright © 2016 Artem Solovenko. All rights reserved.
 */
 
-"SmartAlbums" = "Smart Albums";
-"UserCollections" = "User Collections";
+"smart_albums_title" = "Smart Albums";
+"user_collections_title" = "User Collections";
 
 "privacy_access_message" = "This app does not have access to your photos.\n\nYou can enable access in Privacy Settings.";

@@ -21,4 +21,10 @@ enum UIConstants {
         static let textColor = UIColor.black
         static let privacyMessageColor = UIColor.lightGray
     }
+    
+    
+    // MARK: - Dimensions
+    enum Dimension {
+        static let albumCellHeight: CGFloat = 60
+    }
 }

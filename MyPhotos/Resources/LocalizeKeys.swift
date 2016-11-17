@@ -9,5 +9,10 @@
 import Foundation
 
 enum LocalizeKeys {
+    
+    static let smartAlbumsName = "smart_albums_title"
+    static let userCollectionsName = "user_collections_title"
+    
     static let privacyAccessMessage = "privacy_access_message"
+    
 }

@@ -15,5 +15,5 @@ func Logger(_ string: String) {
 }
 
 func Localized(_ stringToLocalize: String) -> String {
-    return NSLocalizedString(stringToLocalize, comment: "")
+    return NSLocalizedString(stringToLocalize, comment: stringToLocalize)
 }

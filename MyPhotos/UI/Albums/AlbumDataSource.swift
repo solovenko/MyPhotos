@@ -6,9 +6,10 @@
 //  Copyright © 2016 Artem Solovenko. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol AlbumDataSource: NSObjectProtocol {
     
-    func authorize(completion: (Bool) -> ())
+    func authorize(completion: @escaping (Bool) -> ())
+    func requestPhotoDataSource(for indexPath: IndexPath, photoDataSource: (PhotoDataSource) -> ())
 }

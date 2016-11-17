@@ -45,13 +45,13 @@ class AlbumTableViewCell: UITableViewCell {
         coverImageView.clipsToBounds = true
         contentView.addSubview(coverImageView)
         
-        nameLabel.textColor = UIConstants.textColor
-        nameLabel.font = UIConstants.albumCellFont
+        nameLabel.textColor = UIConstants.Color.textColor
+        nameLabel.font = UIConstants.Font.albumCellFont
         nameLabel.textAlignment = .left
         contentView.addSubview(nameLabel)
         
-        countLabel.textColor = UIConstants.textColor
-        countLabel.font = UIConstants.albumCellFont
+        countLabel.textColor = UIConstants.Color.textColor
+        countLabel.font = UIConstants.Font.albumCellFont
         countLabel.textAlignment = .right
         contentView.addSubview(countLabel)
     }

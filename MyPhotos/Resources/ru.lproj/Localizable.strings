@@ -6,7 +6,9 @@
   Copyright © 2016 Artem Solovenko. All rights reserved.
 */
 
-"SmartAlbums" = "Системные альбомы";
-"UserCollections" = "Пользовательские альбомы";
+"smart_albums_title" = "Системные альбомы";
+"user_collections_title" = "Пользовательские альбомы";
 
 "privacy_access_message" = "Доступ к фото запрещен.\n\nВы можете открыть доступ в Настройки-> Конфиденциальность.";
+
+"Albums" = "Альбомы";
