@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D592419D1DDD568300692F59 /* PhotoDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D592419C1DDD568300692F59 /* PhotoDataSource.swift */; };
 		D592419F1DDD570F00692F59 /* IOS9PhotoDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D592419E1DDD570F00692F59 /* IOS9PhotoDataSource.swift */; };
+		D59241A21DDDE1BD00692F59 /* AlbumSectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59241A11DDDE1BD00692F59 /* AlbumSectionTests.swift */; };
 		D5976EBA1DC8F1C300BBDA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5976EB91DC8F1C300BBDA35 /* AppDelegate.swift */; };
 		D5976EBF1DC8F1C400BBDA35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5976EBD1DC8F1C400BBDA35 /* Main.storyboard */; };
 		D5976EC11DC8F1C400BBDA35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5976EC01DC8F1C400BBDA35 /* Assets.xcassets */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		D592419C1DDD568300692F59 /* PhotoDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDataSource.swift; sourceTree = "<group>"; };
 		D592419E1DDD570F00692F59 /* IOS9PhotoDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOS9PhotoDataSource.swift; sourceTree = "<group>"; };
+		D59241A11DDDE1BD00692F59 /* AlbumSectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumSectionTests.swift; sourceTree = "<group>"; };
 		D5976EB61DC8F1C300BBDA35 /* MyPhotos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPhotos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5976EB91DC8F1C300BBDA35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D5976EBE1DC8F1C400BBDA35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			children = (
 				D5976ECE1DC8F1C800BBDA35 /* MyPhotosTests.swift */,
 				D5BC38AB1DD8511700BB6E69 /* AlbumsViewControllerTests.swift */,
+				D59241A11DDDE1BD00692F59 /* AlbumSectionTests.swift */,
 				D5976ED01DC8F1C800BBDA35 /* Info.plist */,
 			);
 			path = MyPhotosTests;
@@ -423,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D59241A21DDDE1BD00692F59 /* AlbumSectionTests.swift in Sources */,
 				D5BC38AC1DD8511700BB6E69 /* AlbumsViewControllerTests.swift in Sources */,
 				D5976ECF1DC8F1C800BBDA35 /* MyPhotosTests.swift in Sources */,
 			);
