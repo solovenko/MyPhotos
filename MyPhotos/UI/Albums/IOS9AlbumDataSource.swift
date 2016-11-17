@@ -149,43 +149,18 @@ extension IOS9AlbumDataSource: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         Logger("\(#function), line: \(#line)")
         
-        // TODO: Дописать
-        
         for section in sections {
-            if let changeDetails = changeInstance.changeDetails(for: section.rawValue) {
-                DispatchQueue.global(qos: .userInitiated).async {
-                    section.applyChanges(changes: changeDetails, completion: {
-                        DispatchQueue.main.async { [weak self] in
-                            guard let strongSelf = self, let index = strongSelf.sections.index(of: section) else { return }
-                            
-                            strongSelf.tableView?.reloadSections(IndexSet(integer: index), with: .automatic)
-                        }
-                    })
-                }
+            guard let changeDetails = changeInstance.changeDetails(for: section.rawValue) else { continue }
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                section.applyChanges(changes: changeDetails, completion: {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let strongSelf = self, let index = strongSelf.sections.index(of: section) else { return }
+                        
+                        strongSelf.tableView?.reloadSections(IndexSet(integer: index), with: .automatic)
+                    }
+                })
             }
         }
-        
-//        DispatchQueue.main.sync {
-//            for section in sections {
-//                section.requestForChangesDetails({ (fetchResult) -> Bool in
-//                    if let fetchResult = fetchResult as? PHFetchResult<PHAssetCollection> {
-//                        if let changeDetails = changeInstance.changeDetails(for: fetchResult) {
-//                            return true
-//                        }
-//                    } else if let fetchResult = fetchResult as? PHFetchResult<PHCollection> {
-//                        
-//                    }
-//                })
-//            }
-//            
-//            if let changeDetails = changeInstance.changeDetails(for: smartAlbums!) {
-//                smartAlbums = changeDetails.fetchResultAfterChanges
-//                tableView.reloadSections(IndexSet(integer: AlbumSection.smartAlbums.rawValue), with: .automatic)
-//            }
-//            if let changeDetails = changeInstance.changeDetails(for: userCollections!) {
-//                userCollections = changeDetails.fetchResultAfterChanges
-//                tableView.reloadSections(IndexSet(integer: AlbumSection.userCollections.rawValue), with: .automatic)
-//            }
-//        }
     }
 }

@@ -12,7 +12,6 @@ import Photos
 class IOS9PhotoDataSource: NSObject, PhotoDataSource {
     
     var thumbnailSize: CGSize = CGSize.zero
-    var preheatRect: CGRect = CGRect.zero
     
     var fetchResults: PHFetchResult<PHAsset>!
     var assetCollection: PHAssetCollection! {
