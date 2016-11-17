@@ -17,19 +17,33 @@ class PreviewViewController: UIViewController {
         }
     }
     
-    private let imageView = UIImageView()
+    fileprivate let imageView = UIImageView()
+    private let scrollView = UIScrollView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        scrollView.minimumZoomScale = 1
+        scrollView.maximumZoomScale = 5
+        scrollView.delegate = self
+        view.addSubview(scrollView)
+        
         imageView.contentMode = .scaleAspectFit
-        view.addSubview(imageView)
+        scrollView.addSubview(imageView)
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         let rect = UIEdgeInsetsInsetRect(view.bounds, UIEdgeInsetsMake(self.topLayoutGuide.length, 0, 0, 0))
-        imageView.frame = rect
+        scrollView.frame = rect
+        imageView.frame = scrollView.bounds
+    }
+}
+
+extension PreviewViewController: UIScrollViewDelegate {
+
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
     }
 }
