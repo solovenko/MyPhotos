@@ -20,7 +20,7 @@ class AlbumsViewController: UIViewController {
         
         title = Localized("Albums").capitalized
         
-        dataSource = IOS9AlbumDataSource()
+        dataSource = IOS9AlbumDataSource() // Delegate table data source
         
         view.backgroundColor = UIColor.groupTableViewBackground
 
@@ -38,7 +38,6 @@ class AlbumsViewController: UIViewController {
         messageLabel.numberOfLines = 0
         messageLabel.textAlignment = .center
         view.addSubview(messageLabel)
-        
     }
 
     override func viewWillAppear(_ animated: Bool) {

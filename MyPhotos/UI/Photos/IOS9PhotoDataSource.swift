@@ -79,9 +79,10 @@ extension IOS9PhotoDataSource: UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotosCollectionViewCell.cellId,
                                                       for: indexPath) as! PhotosCollectionViewCell
-        cell.identifier = asset.localIdentifier        
+        cell.identifier = asset.localIdentifier // Assign the unique id to the cell
         DispatchQueue.global().async {
             self.imageManager.requestImage(for: asset, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil) { (result, info) in
+                // Check the correctness of id 
                 if cell.identifier == asset.localIdentifier {
                     DispatchQueue.main.async {
                         cell.imageView.image = result
